@@ -1,19 +1,65 @@
 <!DOCTYPE html>
 <html>
-  <body style="font-family: sans-serif; text-align: center; padding: 50px;">
-    <h2>Get My Free Ebook</h2>
+  <head>
+    <meta charset="UTF-8">
+    <title>Get Your Free Ebook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 50px;
+        background: #f7f7f7;
+      }
+      form {
+        background: white;
+        max-width: 400px;
+        margin: auto;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      input[type="email"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      input[type="submit"] {
+        padding: 12px 24px;
+        background: #28a745;
+        color: white;
+        border: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #thanksMsg {
+        color: green;
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>🎁 Get My Free Ebook</h2>
     <p>Enter your email below to download instantly:</p>
 
-    <form method="POST" 
-          action="https://script.google.com/macros/s/AKfycbz_-OXlM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec" 
-          target="hidden_iframe" 
-          onsubmit="parent.postMessage('submitted', '*'); document.getElementById('thanksMsg').style.display='block'; return true;">
+    <form 
+      method="POST" 
+      action="https://script.google.com/macros/s/AKfycbz_-OXIM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec" 
+      target="hidden_iframe" 
+      onsubmit="document.getElementById('thanksMsg').style.display='block'; return true;">
       
-      <input type="email" name="email" required placeholder="Your email" style="width: 100%; padding: 12px; font-size: 16px;"><br><br>
-      <input type="submit" value="Get the Ebook" style="padding: 12px 24px; background: #28a745; color: white; border: none; font-size: 16px; cursor: pointer;">
+      <input type="email" name="email" required placeholder="Your email">
+      <input type="submit" value="Get the Ebook">
     </form>
 
     <iframe name="hidden_iframe" style="display:none;"></iframe>
-    <p id="thanksMsg" style="display:none; color:green; margin-top: 10px;">Thanks! Check your inbox soon.</p>
+
+    <p id="thanksMsg">✅ Thanks! Check your inbox soon.</p>
   </body>
 </html>
