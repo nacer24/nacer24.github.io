@@ -1,28 +1,65 @@
-<script>
-  const form = document.getElementById("ebook-form");
-  const thanksMsg = document.getElementById("thanksMsg");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Get Your Free Ebook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      text-align: center;
+      padding: 60px;
+    }
+    form {
+      background: white;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input[type="email"], input[type="submit"] {
+      padding: 12px;
+      margin: 10px 0;
+      width: 90%;
+    }
+    input[type="submit"] {
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #response {
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>Get Your Free Ebook</h2>
+  <p>Enter your email to receive your free copy</p>
+  <form id="ebook-form">
+    <input type="email" name="email" placeholder="Enter your email" required />
+    <input type="submit" value="Get Ebook" />
+  </form>
+  <p id="response"></p>
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  <script>
+    document.getElementById('ebook-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = e.target.email.value;
+      fetch('https://script.google.com/macros/s/AKfycbz_-OXlM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
 
-    const formData = new FormData(form);
-
-    fetch("https://script.google.com/macros/s/AKfycbz_-OXlM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec", {
-      method: "POST",
-      body: formData
-    })
-    .then(response => {
-      if (!response.ok) throw new Error("Server error: " + response.status);
-      return response.text();
-    })
-    .then(result => {
-      console.log("Success:", result);
-      form.reset();
-      thanksMsg.style.display = "block";
-    })
-    .catch(error => {
-      console.error("Form Error:", error);
-      alert("⚠️ Something went wrong. Please try again.\n\n" + error);
+      document.getElementById('response').innerText = "Thanks! Check your inbox shortly.";
+      e.target.reset();
     });
-  });
-</script> 
+  </script>
+</body>
+</html>
