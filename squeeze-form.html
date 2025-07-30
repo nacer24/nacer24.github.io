@@ -1,83 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Get Your Free Ebook</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px;
-      background: #f7f7f7;
-    }
-    form {
-      background: white;
-      max-width: 400px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    input[type="email"] {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    input[type="submit"] {
-      padding: 12px 24px;
-      background: #28a745;
-      color: white;
-      border: none;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #thanksMsg {
-      color: green;
-      margin-top: 20px;
-      display: none;
-    }
-  </style>
-</head>
+<script>
+  const form = document.getElementById("ebook-form");
+  const thanksMsg = document.getElementById("thanksMsg");
 
-<body>
-  <h2>🎁 Get My Free Ebook</h2>
-  <p>Enter your email below to download instantly:</p>
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  <form id="ebook-form">
-    <input type="email" name="email" required placeholder="Your email">
-    <input type="submit" value="Get the Ebook">
-  </form>
+    const formData = new FormData(form);
 
-  <p id="thanksMsg">✅ Thanks! Check your inbox soon.</p>
-
-  <script>
-    const form = document.getElementById("ebook-form");
-    const thanksMsg = document.getElementById("thanksMsg");
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-      fetch("https://script.google.com/macros/s/AKfycbz_-OXIM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec", {
-        method: "POST",
-        body: formData
-      })
-      .then(response => response.text())
-      .then(result => {
-        console.log("Success:", result);
-        form.reset();
-        thanksMsg.style.display = "block";
-      })
-      .catch(error => {
-        console.error("Error!", error.message);
-        alert("Something went wrong. Please try again.");
-      });
+    fetch("https://script.google.com/macros/s/AKfycbz_-OXlM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Server error: " + response.status);
+      return response.text();
+    })
+    .then(result => {
+      console.log("Success:", result);
+      form.reset();
+      thanksMsg.style.display = "block";
+    })
+    .catch(error => {
+      console.error("Form Error:", error);
+      alert("⚠️ Something went wrong. Please try again.\n\n" + error);
     });
-  </script>
-</body>
-</html>
+  });
+</script>
