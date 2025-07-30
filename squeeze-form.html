@@ -1,41 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Get Your Free Ebook</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      text-align: center;
-      padding: 60px;
-    }
-    form {
-      background: white;
-      padding: 30px;
-      max-width: 400px;
-      margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    input[type="email"], input[type="submit"] {
-      padding: 12px;
-      margin: 10px 0;
-      width: 90%;
-    }
-    input[type="submit"] {
-      background: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    #response {
-      margin-top: 15px;
-      font-weight: bold;
-      color: green;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Get Your Free Ebook</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f2f2f2; text-align: center; padding: 60px; }
+  form { background: white; padding: 30px; max-width: 400px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  input[type="email"], input[type="submit"] { padding: 12px; margin: 10px 0; width: 90%; }
+  input[type="submit"] { background: #28a745; color: white; border: none; cursor: pointer; }
+  #response { margin-top: 15px; font-weight: bold; color: green; }
+</style>
 </head>
 <body>
   <h2>Get Your Free Ebook</h2>
@@ -50,14 +25,29 @@
     document.getElementById('ebook-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const email = e.target.email.value;
+      const responseEl = document.getElementById('response');
+
       fetch('https://script.google.com/macros/s/AKfycbz_-OXlM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec', {
         method: 'POST',
-        mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.status === 'success') {
+          responseEl.style.color = 'green';
+          responseEl.textContent = 'Thanks! Check your inbox shortly.';
+        } else {
+          responseEl.style.color = 'red';
+          responseEl.textContent = 'Oops! Something went wrong: ' + data.message;
+        }
+      })
+      .catch(error => {
+        responseEl.style.color = 'red';
+        responseEl.textContent = 'Error submitting form. Please try again later.';
+        console.error(error);
       });
 
-      document.getElementById('response').innerText = "Thanks! Check your inbox shortly.";
       e.target.reset();
     });
   </script>
