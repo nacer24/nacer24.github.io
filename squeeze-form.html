@@ -1,54 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Get Your Free Ebook</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #f2f2f2; text-align: center; padding: 60px; }
-  form { background: white; padding: 30px; max-width: 400px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-  input[type="email"], input[type="submit"] { padding: 12px; margin: 10px 0; width: 90%; }
-  input[type="submit"] { background: #28a745; color: white; border: none; cursor: pointer; }
-  #response { margin-top: 15px; font-weight: bold; color: green; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Get Your Free Ebook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      text-align: center;
+      padding: 40px;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input[type="email"] {
+      padding: 10px;
+      width: 250px;
+      margin-bottom: 15px;
+    }
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h2>Get Your Free Ebook</h2>
-  <p>Enter your email to receive your free copy</p>
-  <form id="ebook-form">
+  <h1>Get Your Free Ebook</h1>
+  <p>Enter your email to receive your free ebook instantly!</p>
+
+  <form id="ebookForm">
     <input type="email" name="email" placeholder="Enter your email" required />
-    <input type="submit" value="Get Ebook" />
+    <br/>
+    <input type="submit" value="Get My Ebook" />
   </form>
-  <p id="response"></p>
+
+  <div id="message"></div>
 
   <script>
-    document.getElementById('ebook-form').addEventListener('submit', function(e) {
+    document.getElementById('ebookForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = e.target.email.value;
-      const responseEl = document.getElementById('response');
+      const email = this.email.value;
 
-      fetch('https://script.google.com/macros/s/AKfycbz_-OXlM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+      fetch("https://script.google.com/macros/s/AKfycbz_-OXlM4JxjtggAaJ5twhu4AwFwZuHopd6_eA4Kaq46X08iIWRLhh8UQrnOq_3GIFd/exec", {
+        method: "POST",
+        body: new URLSearchParams({ email: email })
       })
-      .then(res => res.json())
-      .then(data => {
-        if(data.status === 'success') {
-          responseEl.style.color = 'green';
-          responseEl.textContent = 'Thanks! Check your inbox shortly.';
-        } else {
-          responseEl.style.color = 'red';
-          responseEl.textContent = 'Oops! Something went wrong: ' + data.message;
-        }
-      })
-      .catch(error => {
-        responseEl.style.color = 'red';
-        responseEl.textContent = 'Error submitting form. Please try again later.';
-        console.error(error);
+      .then(res => res.text())
+      .then(text => {
+        document.getElementById("message").innerText = text === "Success"
+          ? "Check your inbox for the ebook!"
+          : "Something went wrong: " + text;
       });
-
-      e.target.reset();
     });
   </script>
 </body>
