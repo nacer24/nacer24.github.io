@@ -1,69 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Get Your Free Ebook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f3f3f3;
+      font-family: sans-serif;
       text-align: center;
-      padding: 40px;
+      padding: 50px;
+      background: #f0f0f0;
     }
     form {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
       display: inline-block;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     input[type="email"] {
       padding: 10px;
-      width: 250px;
-      margin-bottom: 15px;
+      width: 80%;
+      margin: 10px 0;
     }
     input[type="submit"] {
       padding: 10px 20px;
-      background-color: #007bff;
+      background: #28a745;
       color: white;
       border: none;
+      border-radius: 4px;
       cursor: pointer;
-    }
-    #message {
-      margin-top: 20px;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Get Your Free Ebook</h1>
-  <p>Enter your email to receive your free ebook instantly!</p>
 
-  <form id="ebookForm">
+  <h1>🎁 Get Your Free eBook</h1>
+  <p>Enter your email below to receive your free download</p>
+
+  <form id="subscribe-form">
     <input type="email" name="email" placeholder="Enter your email" required />
-    <br/>
-    <input type="submit" value="Get My Ebook" />
+    <br>
+    <input type="submit" value="Send Me the eBook" />
+    <p id="status"></p>
   </form>
 
-  <div id="message"></div>
-
   <script>
-    document.getElementById('ebookForm').addEventListener('submit', function(e) {
+    document.getElementById("subscribe-form").addEventListener("submit", function(e) {
       e.preventDefault();
-      const email = this.email.value;
+      const form = e.target;
+      const email = form.email.value;
+      const status = document.getElementById("status");
 
       fetch("https://script.google.com/macros/s/AKfycbzvStTJpwyEjNuVpkO5-cWNmgKPdeyWgzP7tacx-b_o6CRggr6WEliqzMNnnRKmFcTD/exec", {
         method: "POST",
-        body: new URLSearchParams({ email: email })
-      })
-      .then(res => res.text())
-      .then(text => {
-        document.getElementById("message").innerText = text === "Success"
-          ? "Check your inbox for the ebook!"
-          : "Something went wrong: " + text;
+        mode: "no-cors",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "email=" + encodeURIComponent(email)
       });
+
+      status.innerText = "✅ Thank you! Check your inbox.";
+      form.reset();
     });
   </script>
+
 </body>
 </html>
