@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Get Your Free Ebook</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       font-family: sans-serif;
@@ -31,6 +31,11 @@
       border-radius: 4px;
       cursor: pointer;
     }
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -40,27 +45,38 @@
 
   <form id="subscribe-form">
     <input type="email" name="email" placeholder="Enter your email" required />
-    <br>
+    <br />
     <input type="submit" value="Send Me the eBook" />
     <p id="status"></p>
   </form>
 
   <script>
-    document.getElementById("subscribe-form").addEventListener("submit", function(e) {
+    document.getElementById("subscribe-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const form = e.target;
       const email = form.email.value;
       const status = document.getElementById("status");
 
-      fetch("https://script.google.com/macros/s/AKfycbzvStTJpwyEjNuVpkO5-cWNmgKPdeyWgzP7tacx-b_o6CRggr6WEliqzMNnnRKmFcTD/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "email=" + encodeURIComponent(email)
-      });
-
-      status.innerText = "✅ Thank you! Check your inbox.";
-      form.reset();
+      fetch(
+        "https://script.google.com/macros/s/AKfycbzvStTJpwyEjNuVpkO5-cWNmgKPdeyWgzP7tacx-b_o6CRggr6WEliqzMNnnRKmFcTD/exec",
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: "email=" + encodeURIComponent(email),
+        }
+      )
+        .then((response) => response.text())
+        .then((data) => {
+          status.innerText = data;
+          form.reset();
+        })
+        .catch((error) => {
+          status.innerText = "❌ Submission failed. Try again later.";
+          console.error(error);
+        });
     });
   </script>
 
