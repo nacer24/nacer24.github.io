@@ -12,7 +12,6 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      margin: 0;
     }
     .form-box {
       background: #fff;
@@ -72,18 +71,15 @@
 
       fetch("https://script.google.com/macros/s/AKfycbw1Ye4Rk13Qo8lz5SxMav7oeTeqYEFSEPbf20cxonAwP5MeaWwtao3Any5g9uzqWkQB/exec", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
         body: data
       })
       .then(res => res.text())
       .then(msg => {
-        responseEl.textContent = "✅ " + msg;
+        responseEl.textContent = msg;
         form.reset();
       })
       .catch(() => {
-        responseEl.textContent = "❌ Something went wrong. Try again.";
+        responseEl.textContent = "❌ Something went wrong. Please try again.";
       });
     });
   </script>
