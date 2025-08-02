@@ -1,142 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Your Free Ebook!</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f4f4;
-            margin: 0;
-        }
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        p {
-            color: #666;
-            margin-bottom: 25px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: bold;
-        }
-        input[type="email"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #message {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-        .success {
-            color: green;
-        }
-        .error {
-            color: red;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Squeeze Page</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Unlock Your Free Ebook!</h1>
-        <p>Enter your email below to receive your complimentary copy of our amazing ebook directly in your inbox.</p>
-        <form id="ebookForm">
-            <div class="form-group">
-                <label for="email">Your Email Address:</label>
-                <input type="email" id="email" name="email" placeholder="you@example.com" required>
-            </div>
-            <button type="submit">Get My Ebook!</button>
-        </form>
-        <div id="message"></div>
-    </div>
+<h1>Subscribe for Updates</h1>
+<form id="subscribeForm">
+  <input type="email" id="email" placeholder="Enter your email" required />
+  <button type="submit">Subscribe</button>
+</form>
+<p id="message"></p>
 
-    <script>
-        // Replace with your actual Google Apps Script Web App URL
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxN5XhLKwSfJvKAODEIdwDYAL0pJQauA5miCX6gklc2tw2wKibRosXHDWpUM2M5I5XY/exec';
+<script>
+  document.getElementById('subscribeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    fetch('https://script.google.com/macros/s/AKfycbxN5XhLKwSfJvKAODEIdwDYAL0pJQauA5miCX6gklc2tw2wKibRosXHDWpUM2M5I5XY/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `email=${encodeURIComponent(email)}`
+    })
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('message').textContent = 'Thank you for subscribing!';
+    })
+    .catch(() => {
+      document.getElementById('message').textContent = 'Error. Please try again.';
+    });
+  });
+</script>
 
-        const ebookForm = document.getElementById('ebookForm');
-        const messageDiv = document.getElementById('message');
-
-        ebookForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent default form submission
-
-            const emailInput = document.getElementById('email');
-            const email = emailInput.value.trim();
-
-            if (!email) {
-                displayMessage('Please enter your email address.', 'error');
-                return;
-            }
-
-            messageDiv.textContent = 'Sending...';
-            messageDiv.className = ''; // Clear previous status class
-
-            try {
-                // Using URLSearchParams to send data as application/x-www-form-urlencoded
-                // which Google Apps Script's e.parameter expects.
-                const params = new URLSearchParams();
-                params.append('email', email);
-
-                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: params
-                });
-
-                const data = await response.json(); // Assuming the Apps Script returns JSON
-
-                if (response.ok && data.status === 'success') {
-                    displayMessage('Success! Your ebook has been sent to your email.', 'success');
-                    ebookForm.reset(); // Clear the form
-                } else {
-                    // Display error message from the Apps Script or a generic one
-                    displayMessage(`Error: ${data.message || 'Something went wrong. Please try again.'}`, 'error');
-                }
-            } catch (error) {
-                console.error('Network error or unexpected response:', error);
-                displayMessage('Network error. Please check your internet connection and try again.', 'error');
-            }
-        });
-
-        function displayMessage(msg, type) {
-            messageDiv.textContent = msg;
-            messageDiv.className = type; // Add 'success' or 'error' class for styling
-        }
-    </script>
 </body>
 </html>
