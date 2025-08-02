@@ -1,51 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Subscribe to Our Newsletter</title>
+    <title>Email Signup</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; }
+        .form-container { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+        input[type="email"] { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { background: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <!-- (Your CSS and HTML structure from the previous answer goes here) -->
-    
-    <div class="container">
-        <h1>Get Our Free Newsletter</h1>
+    <div class="form-container">
+        <h2>Subscribe to Our Newsletter</h2>
         <form id="emailForm">
-            <input type="email" id="email" name="email" placeholder="Your email address" required>
-            <button type="submit">Subscribe Now</button>
+            <input type="email" id="email" name="email" required placeholder="Your email address">
+            <button type="submit">Subscribe</button>
         </form>
-        <p id="status"></p>
+        <div id="status"></div>
     </div>
 
     <script>
         document.getElementById('emailForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const form = e.target;
+            
             const email = document.getElementById('email').value;
             const status = document.getElementById('status');
-            const button = form.querySelector('button');
-
-            button.disabled = true;
-            status.innerHTML = "Submitting...";
-
-            // PASTE YOUR NEW WEB APP URL HERE
-            const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxN5XhLKwSfJvKAODEIdwDYAL0pJQauA5miCX6gklc2tw2wKibRosXHDWpUM2M5I5XY/exec"; 
-
-            fetch(WEB_APP_URL, {
+            
+            status.textContent = "Processing...";
+            
+            // Replace with your newly deployed web app URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxN5XhLKwSfJvKAODEIdwDYAL0pJQauA5miCX6gklc2tw2wKibRosXHDWpUM2M5I5XY/exec';
+            
+            fetch(scriptURL, {
                 method: 'POST',
-                mode: 'no-cors', // Important for this type of request
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email })
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email: email})
             })
-            .then(res => {
-                status.innerHTML = "Success! Please check your email for confirmation.";
-                // Redirect to the reward page after a short delay
+            .then(response => {
+                status.textContent = "Thank you for subscribing!";
                 setTimeout(() => {
                     window.location.href = "https://www.gogo.com";
-                }, 3000);
+                }, 2000);
             })
-            .catch(err => {
-                status.innerHTML = "An error occurred. Please try again.";
-                button.disabled = false;
-                console.error(err);
+            .catch(error => {
+                status.textContent = "Error: " + error;
+                console.error('Error:', error);
             });
         });
     </script>
