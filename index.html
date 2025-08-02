@@ -1,86 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Get Your Free eBook</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    .form-box {
-      background: #fff;
-      padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 400px;
-    }
-    .form-box h1 {
-      margin-bottom: 20px;
-      color: #28a745;
-    }
-    input[type="email"] {
-      padding: 12px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
-    button {
-      padding: 12px 24px;
-      background-color: #28a745;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #response {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #333;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Subscribe for Free Ebook</title>
 </head>
 <body>
-  <div class="form-box">
-    <h1>Get Your Free eBook</h1>
-    <form id="ebookForm">
-      <input type="email" name="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe & Get eBook</button>
-    </form>
-    <div id="response"></div>
-  </div>
+  <h1>Subscribe to get your Free Ebook</h1>
+  <form id="subscribeForm">
+    <input type="email" id="email" name="email" placeholder="Enter your email" required />
+    <button type="submit">Subscribe</button>
+  </form>
+  <p id="message"></p>
 
   <script>
-    document.getElementById("ebookForm").addEventListener("submit", function(e) {
+    const form = document.getElementById('subscribeForm');
+    const messageEl = document.getElementById('message');
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1Ye4Rk13Qo8lz5SxMav7oeTeqYEFSEPbf20cxonAwP5MeaWwtao3Any5g9uzqWkQB/exec"; // Replace with your web app URL
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const form = e.target;
-      const email = form.email.value;
-      const responseEl = document.getElementById("response");
+      const email = document.getElementById('email').value;
 
-      const data = new URLSearchParams();
-      data.append("email", email);
+      messageEl.textContent = "Submitting...";
+      
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `email=${encodeURIComponent(email)}`,
+        });
 
-      fetch("https://script.google.com/macros/s/AKfycbw1Ye4Rk13Qo8lz5SxMav7oeTeqYEFSEPbf20cxonAwP5MeaWwtao3Any5g9uzqWkQB/exec", {
-        method: "POST",
-        body: data
-      })
-      .then(res => res.text())
-      .then(msg => {
-        responseEl.textContent = msg;
-        form.reset();
-      })
-      .catch(() => {
-        responseEl.textContent = "❌ Something went wrong. Please try again.";
-      });
+        const result = await response.json();
+        if (result.status === "success") {
+          messageEl.textContent = "Subscription successful! Check your email.";
+          form.reset();
+        } else {
+          messageEl.textContent = "Error: " + (result.message || "Please try again.");
+        }
+      } catch (err) {
+        messageEl.textContent = "Submission failed. Try again later.";
+      }
     });
   </script>
 </body>
