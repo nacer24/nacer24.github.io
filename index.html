@@ -1,55 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Email Signup</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; }
-        .form-container { background: #f9f9f9; padding: 20px; border-radius: 8px; }
-        input[type="email"] { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
-        button { background: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Get Your Free eBook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .form-box {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 400px;
+    }
+    .form-box h1 {
+      margin-bottom: 20px;
+      color: #28a745;
+    }
+    input[type="email"] {
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      background-color: #28a745;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #response {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Subscribe to Our Newsletter</h2>
-        <form id="emailForm">
-            <input type="email" id="email" name="email" required placeholder="Your email address">
-            <button type="submit">Subscribe</button>
-        </form>
-        <div id="status"></div>
-    </div>
+  <div class="form-box">
+    <h1>Get Your Free eBook</h1>
+    <form id="ebookForm">
+      <input type="email" name="email" placeholder="Enter your email" required>
+      <button type="submit">Subscribe & Get eBook</button>
+    </form>
+    <div id="response"></div>
+  </div>
 
-    <script>
-        document.getElementById('emailForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const status = document.getElementById('status');
-            
-            status.textContent = "Processing...";
-            
-            // Replace with your newly deployed web app URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbwcXqASqtaBtndh9OJXJs9mLbBVxWBujxuSOcQeC5C1zbJingySUawsZ0VFjQgi1eHf/exec';
-            
-            fetch(scriptURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({email: email})
-            })
-            .then(response => {
-                status.textContent = "Thank you for subscribing!";
-                setTimeout(() => {
-                    window.location.href = "https://www.gogo.com";
-                }, 2000);
-            })
-            .catch(error => {
-                status.textContent = "Error: " + error;
-                console.error('Error:', error);
-            });
-        });
-    </script>
+  <script>
+    document.getElementById("ebookForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const email = form.email.value;
+      const responseEl = document.getElementById("response");
+
+      const data = new URLSearchParams();
+      data.append("email", email);
+
+      fetch("https://script.google.com/macros/s/AKfycbwcXqASqtaBtndh9OJXJs9mLbBVxWBujxuSOcQeC5C1zbJingySUawsZ0VFjQgi1eHf/exec", {
+        method: "POST",
+        body: data
+      })
+      .then(res => res.text())
+      .then(msg => {
+        responseEl.textContent = "✅ " + msg;
+        form.reset();
+      })
+      .catch(() => {
+        responseEl.textContent = "❌ Something went wrong. Try again.";
+      });
+    });
+  </script>
 </body>
 </html>
-
