@@ -80,6 +80,8 @@
           body: JSON.stringify({ email })
         });
 
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
         const data = await response.json();
 
         if (data.status === "ok") {
@@ -90,12 +92,10 @@
         }
       } catch (err) {
         messageEl.textContent = "❌ Network error. Please try again.";
+        console.error("Error:", err);
       }
     });
   </script>
 
 </body>
 </html>
-
-
-
