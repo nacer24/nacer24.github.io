@@ -12,6 +12,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
     .form-box {
       background: #fff;
@@ -20,6 +21,7 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       text-align: center;
       max-width: 400px;
+      width: 100%;
     }
     .form-box h1 {
       margin-bottom: 20px;
@@ -42,10 +44,15 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
     #response {
       margin-top: 15px;
       font-size: 14px;
       color: #333;
+      min-height: 20px;
     }
   </style>
 </head>
@@ -60,11 +67,18 @@
   </div>
 
   <script>
-    document.getElementById("ebookForm").addEventListener("submit", function(e) {
+    const form = document.getElementById("ebookForm");
+    const responseEl = document.getElementById("response");
+
+    form.addEventListener("submit", function(e) {
       e.preventDefault();
-      const form = e.target;
-      const email = form.email.value;
-      const responseEl = document.getElementById("response");
+      const email = form.email.value.trim();
+      if (!email) return;
+
+      // Disable button while sending
+      const btn = form.querySelector("button");
+      btn.disabled = true;
+      responseEl.textContent = "⏳ Sending request...";
 
       const data = new URLSearchParams();
       data.append("email", email);
@@ -80,13 +94,11 @@
       })
       .catch(() => {
         responseEl.textContent = "❌ Something went wrong. Try again.";
+      })
+      .finally(() => {
+        btn.disabled = false;
       });
     });
   </script>
 </body>
 </html>
-
-
-
-
-
