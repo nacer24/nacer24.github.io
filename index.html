@@ -1,29 +1,100 @@
-<!doctype html>
-<html>
-  <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Get Your Free eBook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .form-box {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #response {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h1>Get Your Free eBook</h1>
     <form id="ebookForm">
-      <input type="email" name="email" placeholder="Enter your email" required>
-      <button>Get eBook</button>
+      <input type="email" name="email" placeholder="Enter your email" required />
+      <button type="submit">Subscribe & Get eBook</button>
     </form>
-    <div id="msg"></div>
+    <div id="response"></div>
+  </div>
 
-    <script>
-      document.getElementById('ebookForm').addEventListener('submit', async function(e){
-        e.preventDefault();
-        const form = e.target;
-        const data = new FormData(form);
-        const url = "https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec"; // e.g. https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec
+  <script>
+    const form = document.getElementById('ebookForm');
+    const responseEl = document.getElementById('response');
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec"; // your Google Apps Script URL
 
-        try {
-          const res = await fetch(url, { method: 'POST', body: data });
-          // parse JSON response (server now returns JSON)
-          const json = await res.json();
-          document.getElementById('msg').textContent = json.message || json.status;
-        } catch (err) {
-          document.getElementById('msg').textContent = "Error: " + err;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      responseEl.textContent = "";
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch(WEB_APP_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        // Expect JSON response
+        const json = await res.json();
+
+        if (json.status === "ok") {
+          responseEl.style.color = "green";
+          responseEl.textContent = json.message || "Confirmation email sent. Please check your inbox.";
+          form.reset();
+        } else {
+          responseEl.style.color = "red";
+          responseEl.textContent = json.message || "Error occurred. Please try again.";
         }
-      });
-    </script>
-  </body>
+      } catch (err) {
+        responseEl.style.color = "red";
+        responseEl.textContent = "Network error. Please try again.";
+      }
+    });
+  </script>
+</body>
 </html>
-
