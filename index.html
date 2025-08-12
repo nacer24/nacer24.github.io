@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Get Your Free eBook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,89 +12,81 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
-    .form-box {
-      background: white;
-      padding: 30px 40px;
+    .container {
+      background: #fff;
+      padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      max-width: 400px;
-      width: 100%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
       text-align: center;
     }
-    h1 {
-      color: #28a745;
-      margin-bottom: 20px;
-    }
     input[type="email"] {
+      padding: 10px;
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
+      margin-bottom: 10px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 15px;
+      border-radius: 5px;
     }
     button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      background-color: #28a745;
+      background: #28a745;
       color: white;
+      padding: 10px;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
+      width: 100%;
     }
-    #response {
-      margin-top: 15px;
+    button:hover {
+      background: #218838;
+    }
+    .message {
+      margin-top: 10px;
       font-size: 14px;
-      color: #333;
-      min-height: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="form-box">
-    <h1>Get Your Free eBook</h1>
+
+  <div class="container">
+    <h2>Get Your Free eBook</h2>
+    <p>Enter your email to receive instant access</p>
     <form id="ebookForm">
-      <input type="email" name="email" placeholder="Enter your email" required />
-      <button type="submit">Subscribe & Get eBook</button>
+      <input type="email" id="email" name="email" placeholder="Your Email" required>
+      <button type="submit">Get eBook</button>
     </form>
-    <div id="response"></div>
+    <div class="message" id="message"></div>
   </div>
 
   <script>
-    const form = document.getElementById('ebookForm');
-    const responseEl = document.getElementById('response');
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec"; // your Google Apps Script URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec";
 
-    form.addEventListener('submit', async (e) => {
+    document.getElementById("ebookForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      responseEl.textContent = "";
-      const formData = new FormData(form);
 
-      try {
-        const res = await fetch(WEB_APP_URL, {
-          method: "POST",
-          body: formData
-        });
+      const email = document.getElementById("email").value;
+      document.getElementById("message").innerText = "Submitting...";
 
-        // Expect JSON response
-        const json = await res.json();
-
-        if (json.status === "ok") {
-          responseEl.style.color = "green";
-          responseEl.textContent = json.message || "Confirmation email sent. Please check your inbox.";
-          form.reset();
-        } else {
-          responseEl.style.color = "red";
-          responseEl.textContent = json.message || "Error occurred. Please try again.";
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({ email: email }),
+        headers: {
+          "Content-Type": "application/json"
         }
-      } catch (err) {
-        responseEl.style.color = "red";
-        responseEl.textContent = "Network error. Please try again.";
-      }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          window.location.href = data.ebook; // Redirect to eBook
+        } else {
+          document.getElementById("message").innerText = "Error: " + data.message;
+        }
+      })
+      .catch(err => {
+        document.getElementById("message").innerText = "Network error.";
+      });
     });
   </script>
+
 </body>
 </html>
