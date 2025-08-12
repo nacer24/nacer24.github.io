@@ -5,100 +5,40 @@
   <title>Get Your Free eBook</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .form-box {
-      background: #fff;
-      padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-    }
-    .form-box h1 {
-      margin-bottom: 20px;
-      color: #28a745;
-    }
-    input[type="email"] {
-      padding: 12px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
-    button {
-      padding: 12px 24px;
-      background-color: #28a745;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-    #response {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #333;
-      min-height: 20px;
-    }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; padding: 50px; }
+    form { background: #fff; padding: 20px; border-radius: 10px; display: inline-block; }
+    input[type="email"] { padding: 10px; width: 250px; }
+    button { padding: 10px 20px; background: green; color: white; border: none; border-radius: 5px; }
   </style>
 </head>
 <body>
-  <div class="form-box">
-    <h1>Get Your Free eBook</h1>
-    <form id="ebookForm">
-      <input type="email" name="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe & Get eBook</button>
-    </form>
-    <div id="response"></div>
-  </div>
 
-  <script>
-    const form = document.getElementById("ebookForm");
-    const responseEl = document.getElementById("response");
+<h2>📚 Get Your Free eBook</h2>
+<form id="subscribeForm">
+  <input type="email" name="email" placeholder="Enter your email" required>
+  <br><br>
+  <button type="submit">Subscribe</button>
+</form>
 
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const email = form.email.value.trim();
-      if (!email) return;
+<p id="message"></p>
 
-      // Disable button while sending
-      const btn = form.querySelector("button");
-      btn.disabled = true;
-      responseEl.textContent = "⏳ Sending request...";
-
-      const data = new URLSearchParams();
-      data.append("email", email);
-
-      fetch("https://script.google.com/macros/s/AKfycbw7yBPanL_Y701qFDTTmY1OmD1EX_L-9v9sqYGhXWI1xm4eOwvZvSmYYQzyPIanK-1HIw/exec", {
-        method: "POST",
-        body: data
-      })
-      .then(res => res.text())
-      .then(msg => {
-        responseEl.textContent = "✅ " + msg;
-        form.reset();
-      })
-      .catch(() => {
-        responseEl.textContent = "❌ Something went wrong. Try again.";
-      })
-      .finally(() => {
-        btn.disabled = false;
-      });
+<script>
+  document.getElementById("subscribeForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    let formData = new FormData(this);
+    fetch("https://script.google.com/macros/s/AKfycbw7yBPanL_Y701qFDTTmY1OmD1EX_L-9v9sqYGhXWI1xm4eOwvZvSmYYQzyPIanK-1HIw/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("message").textContent = data.message;
+    })
+    .catch(err => {
+      document.getElementById("message").textContent = "Error: " + err;
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
