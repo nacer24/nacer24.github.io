@@ -9,84 +9,79 @@
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
     }
-    .container {
+    .form-box {
       background: #fff;
-      padding: 25px;
+      padding: 30px 40px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       text-align: center;
+      max-width: 400px;
+    }
+    .form-box h1 {
+      margin-bottom: 20px;
+      color: #28a745;
     }
     input[type="email"] {
-      padding: 10px;
+      padding: 12px;
       width: 100%;
-      margin-bottom: 10px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 16px;
     }
     button {
-      background: #28a745;
+      padding: 12px 24px;
+      background-color: #28a745;
       color: white;
-      padding: 10px;
+      font-size: 16px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
-      width: 100%;
     }
-    button:hover {
-      background: #218838;
-    }
-    .message {
-      margin-top: 10px;
+    #response {
+      margin-top: 15px;
       font-size: 14px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <h2>Get Your Free eBook</h2>
-    <p>Enter your email to receive instant access</p>
+  <div class="form-box">
+    <h1>Get Your Free eBook</h1>
     <form id="ebookForm">
-      <input type="email" id="email" name="email" placeholder="Your Email" required>
-      <button type="submit">Get eBook</button>
+      <input type="email" name="email" placeholder="Enter your email" required>
+      <button type="submit">Subscribe & Get eBook</button>
     </form>
-    <div class="message" id="message"></div>
+    <div id="response"></div>
   </div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec";
-
     document.getElementById("ebookForm").addEventListener("submit", function(e) {
       e.preventDefault();
+      const form = e.target;
+      const email = form.email.value;
+      const responseEl = document.getElementById("response");
 
-      const email = document.getElementById("email").value;
-      document.getElementById("message").innerText = "Submitting...";
+      const data = new URLSearchParams();
+      data.append("email", email);
 
-      fetch(WEB_APP_URL, {
+      fetch("https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec", {
         method: "POST",
-        body: JSON.stringify({ email: email }),
-        headers: {
-          "Content-Type": "application/json"
-        }
+        body: data
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          window.location.href = data.ebook; // Redirect to eBook
-        } else {
-          document.getElementById("message").innerText = "Error: " + data.message;
-        }
+      .then(res => res.text())
+      .then(msg => {
+        responseEl.textContent = "✅ " + msg;
+        form.reset();
       })
-      .catch(err => {
-        document.getElementById("message").innerText = "Network error.";
+      .catch(() => {
+        responseEl.textContent = "❌ Something went wrong. Try again.";
       });
     });
   </script>
-
 </body>
 </html>
