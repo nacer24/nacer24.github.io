@@ -12,7 +12,7 @@
         e.preventDefault();
         const form = e.target;
         const data = new FormData(form);
-        const url = "YOUR_WEBAPP_URL"; // e.g. https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec
+        const url = "https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec"; // e.g. https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec
 
         try {
           const res = await fetch(url, { method: 'POST', body: data });
@@ -26,3 +26,4 @@
     </script>
   </body>
 </html>
+
