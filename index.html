@@ -62,7 +62,7 @@
   </div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwWyis4NqOoiJx7CmEXaBh__ol9DAX8tsm9uKljttp_6fa9e-NK9zATUqZcFWc9j_wsag/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwXibdOSGEm2kKs5KOV37cAjXMKHC-tLWhKzBJfd10oIPWzFt-yJHaKAkHRnOPe-O6J8w/exec"; // Replace with your deployed URL
 
     document.getElementById("ebookForm").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -71,13 +71,17 @@
       const messageEl = document.getElementById("message");
       messageEl.textContent = "Submitting...";
 
+      // Use URLSearchParams for form-urlencoded POST
+      const formData = new URLSearchParams();
+      formData.append('email', email);
+
       try {
         const response = await fetch(WEB_APP_URL, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
           },
-          body: JSON.stringify({ email })
+          body: formData.toString()
         });
 
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -92,12 +96,10 @@
         }
       } catch (err) {
         messageEl.textContent = "❌ Network error. Please try again.";
-        console.error("Error:", err);
+        console.error(err);
       }
     });
   </script>
 
 </body>
 </html>
-
-
