@@ -26,7 +26,7 @@
   document.getElementById("subscribeForm").addEventListener("submit", function(e) {
     e.preventDefault();
     let formData = new FormData(this);
-    fetch("https://script.google.com/macros/s/AKfycbw7yBPanL_Y701qFDTTmY1OmD1EX_L-9v9sqYGhXWI1xm4eOwvZvSmYYQzyPIanK-1HIw/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbzZUwz0gsWhiqFeoTrETZLCfYz8uXncSy1sgE5qlfWpcHRbKalatvJVeLZEAVU1Tsk_PA/exec?", {
       method: "POST",
       body: formData
     })
@@ -42,3 +42,4 @@
 
 </body>
 </html>
+
