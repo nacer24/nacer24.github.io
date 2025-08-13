@@ -12,62 +12,72 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
     .container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
       max-width: 400px;
       width: 100%;
     }
-    input, button {
-      width: 100%;
+    input[type="email"] {
       padding: 10px;
-      margin: 8px 0;
+      width: 100%;
+      margin: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 5px;
     }
     button {
+      padding: 10px 20px;
       background: #28a745;
       color: white;
       border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
       background: #218838;
     }
     .message {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Get Your Free eBook</h2>
+    <h2>📚 Get Your Free eBook</h2>
+    <p>Enter your email below and confirm to download.</p>
     <form id="subscribeForm">
-      <input type="email" id="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe</button>
+      <input type="email" id="email" name="email" placeholder="Your email" required>
+      <button type="submit">Get My Free eBook</button>
     </form>
     <div class="message" id="message"></div>
   </div>
 
   <script>
-    document.getElementById('subscribeForm').addEventListener('submit', function(e) {
+    document.getElementById("subscribeForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      var email = document.getElementById('email').value;
+      let email = document.getElementById("email").value;
+      let message = document.getElementById("message");
 
-      fetch("https://script.google.com/macros/s/AKfycbwaLQkRV7OQ2TgrQv22tEYIe1P8UF-SU2_KQJEj7-Q_FsyD4MIyr7S5Ca4KEGSs028G/exec", {
+      message.textContent = "⏳ Sending confirmation email...";
+
+      fetch("https://script.google.com/macros/s/AKfycbzlukGk6bIwDgRUVNCNp6g187MohXUOLcVXzmUQt390nNAvDbX6UV_AXBIkmrPS0YI8Gw/exec", {
         method: "POST",
-        body: JSON.stringify({ email: email })
+        body: JSON.stringify({ email: email }),
+        headers: { "Content-Type": "application/json" }
       })
-      .then(res => res.json())
+      .then(res => res.text())
       .then(data => {
-        document.getElementById('message').textContent = data.message;
+        message.textContent = "✅ Please check your email to confirm your subscription.";
       })
       .catch(err => {
-        document.getElementById('message').textContent = "Network error. Please try again.";
+        console.error(err);
+        message.textContent = "❌ Network error. Please try again.";
       });
     });
   </script>
