@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Get Your Free eBook</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
+      margin: 0;
     }
     .container {
-      background: #fff;
-      padding: 25px;
+      background: white;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 320px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
       text-align: center;
     }
     input[type="email"] {
@@ -27,80 +28,70 @@
       margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      font-size: 16px;
     }
     button {
+      padding: 10px;
       background: #28a745;
       color: white;
-      padding: 10px;
       border: none;
       border-radius: 5px;
-      cursor: pointer;
       width: 100%;
-      font-size: 16px;
+      cursor: pointer;
     }
     button:hover {
       background: #218838;
     }
     .message {
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 14px;
-      min-height: 20px;
     }
   </style>
 </head>
 <body>
-
   <div class="container">
     <h2>Get Your Free eBook</h2>
-    <p>Enter your email to receive instant access</p>
-    <form id="ebookForm">
-      <input type="email" id="email" name="email" placeholder="Your Email" required />
-      <button type="submit">Get eBook</button>
+    <form id="subscribeForm">
+      <input type="email" id="email" placeholder="Enter your email" required>
+      <button type="submit">Subscribe</button>
     </form>
     <div class="message" id="message"></div>
   </div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzq0cq3k-oUUzhhh6UrARorWAY8TXfNFx6hC-gwPrH4XTFciZ_7JSIXHdsHr4c9xaRL/exec"; // Replace with your deployed URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwEcQ7XJEYf0M5U5PMTzbJUKdeFsQ9T3diqlYHikDNDRns_ENg-mPm8k5qJzJlZpCux/exec";
 
-    document.getElementById("ebookForm").addEventListener("submit", async (e) => {
+    document.getElementById("subscribeForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-
       const email = document.getElementById("email").value.trim();
-      const messageEl = document.getElementById("message");
-      messageEl.textContent = "Submitting...";
+      const messageBox = document.getElementById("message");
 
-      // Use URLSearchParams for form-urlencoded POST
-      const formData = new URLSearchParams();
-      formData.append('email', email);
+      if (!email) {
+        messageBox.textContent = "Please enter a valid email.";
+        messageBox.style.color = "red";
+        return;
+      }
 
       try {
         const response = await fetch(WEB_APP_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-          },
-          body: formData.toString()
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email })
         });
+        const result = await response.json();
 
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        const data = await response.json();
-
-        if (data.status === "ok") {
-          messageEl.textContent = "✅ Confirmation email sent! Please check your inbox.";
-          document.getElementById("ebookForm").reset();
+        if (result.status === "success") {
+          messageBox.textContent = "Success! Check your inbox for the ebook link.";
+          messageBox.style.color = "green";
+          window.location.href = result.ebook;
         } else {
-          messageEl.textContent = "❌ Error: " + data.message;
+          messageBox.textContent = result.message || "Error. Please try again.";
+          messageBox.style.color = "red";
         }
       } catch (err) {
-        messageEl.textContent = "❌ Network error. Please try again.";
-        console.error(err);
+        messageBox.textContent = "Network error. Please try again.";
+        messageBox.style.color = "red";
       }
     });
   </script>
-
 </body>
 </html>
-
