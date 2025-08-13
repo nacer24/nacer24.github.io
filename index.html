@@ -1,84 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
   <title>Get Your Free eBook</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-    }
-    input[type="email"] {
-      padding: 10px;
-      width: 100%;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      padding: 10px 20px;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #218838;
-    }
-    .message {
-      margin-top: 15px;
-      font-size: 14px;
-    }
+    body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; height:100vh; display:flex; align-items:center; justify-content:center; }
+    .card { background:#fff; width:360px; max-width:92vw; padding:24px; border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,.08); text-align:center; }
+    h1 { font-size:20px; margin:0 0 8px; }
+    p  { margin:0 0 16px; color:#444; }
+    input[type=email]{ width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:16px; }
+    button{ margin-top:10px; width:100%; padding:12px; background:#28a745; color:#fff; border:0; border-radius:8px; font-size:16px; cursor:pointer; }
+    button:hover{ background:#218838; }
+    #msg{ margin-top:10px; min-height:20px; font-size:14px; color:#333; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📚 Get Your Free eBook</h2>
-    <p>Enter your email below and confirm to download.</p>
-    <form id="subscribeForm">
-      <input type="email" id="email" name="email" placeholder="Your email" required>
-      <button type="submit">Get My Free eBook</button>
+  <div class="card">
+    <h1>📚 Get Your Free eBook</h1>
+    <p>Enter your email and confirm via the link we send.</p>
+    <form id="form">
+      <input type="email" name="email" placeholder="your@email.com" required />
+      <button type="submit">Send me the link</button>
     </form>
-    <div class="message" id="message"></div>
+    <div id="msg"></div>
   </div>
 
   <script>
-    document.getElementById("subscribeForm").addEventListener("submit", function(e) {
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxypmmzxRb1kynFutsTZXc1kfgtHdDgdHfWOHozAb06pGY_mQTwfzGFhGIWJMVgTn4vdQ/exec";
+
+    document.getElementById("form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      let email = document.getElementById("email").value;
-      let message = document.getElementById("message");
+      const msg = document.getElementById("msg");
+      msg.textContent = "Sending…";
 
-      message.textContent = "⏳ Sending confirmation email...";
+      try {
+        // Use FormData to avoid CORS preflight
+        const formData = new FormData(e.target);
 
-      fetch("https://script.google.com/macros/s/AKfycbzlukGk6bIwDgRUVNCNp6g187MohXUOLcVXzmUQt390nNAvDbX6UV_AXBIkmrPS0YI8Gw/exec", {
-        method: "POST",
-        body: JSON.stringify({ email: email }),
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(res => res.text())
-      .then(data => {
-        message.textContent = "✅ Please check your email to confirm your subscription.";
-      })
-      .catch(err => {
+        const res = await fetch(WEB_APP_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        // Apps Script returns JSON (status/message)
+        const data = await res.json();
+        if (data.status === "ok") {
+          msg.textContent = "✅ Check your inbox and click the confirmation link.";
+          e.target.reset();
+        } else {
+          msg.textContent = "❌ " + (data.message || "Something went wrong.");
+        }
+      } catch (err) {
+        msg.textContent = "❌ Network error. Please try again.";
         console.error(err);
-        message.textContent = "❌ Network error. Please try again.";
-      });
+      }
     });
   </script>
 </body>
