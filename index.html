@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <title>Get Your Free eBook</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: Arial; text-align: center; padding: 40px; }
-    input, button { padding: 10px; margin: 5px; font-size: 16px; }
-  </style>
+  <style>body{font-family:Arial; text-align:center; padding:40px} input,button{padding:10px; margin:5px; font-size:16px}</style>
 </head>
 <body>
   <h1>Get Your Free eBook</h1>
@@ -23,19 +20,18 @@
 
     document.getElementById("subscribeForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const email = document.getElementById("email").value;
+      const email = document.getElementById("email").value.trim();
 
       fetch(WEB_APP_URL, {
         method: "POST",
-        body: new URLSearchParams({ action: "subscribe", email: email })
+        body: new URLSearchParams({ action: "subscribe", email })
       })
       .then(res => res.text())
       .then(text => {
-        if (text === "OK" || text.includes("Confirmation")) {
-          document.getElementById("message").innerText = "Please check your email to confirm your subscription.";
-        } else {
-          document.getElementById("message").innerText = "Error: " + text;
-        }
+        document.getElementById("message").innerText =
+          (text === "OK" || text.includes("Confirmation"))
+            ? "Please check your email to confirm your subscription."
+            : "Error: " + text;
       })
       .catch(() => {
         document.getElementById("message").innerText = "Error. Please try again.";
