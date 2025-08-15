@@ -5,14 +5,12 @@
   <title>Get Your Free eBook</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
-    input[type="email"] { padding: 10px; width: 250px; }
-    button { padding: 10px 20px; margin-top: 10px; }
+    body { font-family: Arial; text-align: center; padding: 40px; }
+    input, button { padding: 10px; margin: 5px; font-size: 16px; }
   </style>
 </head>
 <body>
   <h1>Get Your Free eBook</h1>
-  <p>Enter your email to receive a download link.</p>
   <form id="subscribeForm">
     <input type="email" id="email" placeholder="Enter your email" required>
     <br>
@@ -21,19 +19,26 @@
   <p id="message"></p>
 
   <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWmqcNuJf22G4JrygLMsaU-MVCUeZQEG_gzcu7YZMdSvwyuHIXVapjShbZ0dPeNP4qUA/exec";
+
     document.getElementById("subscribeForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const email = document.getElementById("email").value;
-      fetch("https://script.google.com/macros/s/AKfycbwTHXiilYUMqlAfg6muy8xYSCJLwDYyYCjikGPdcfluNkrOy9plHQDe654Z5ZR_9_JE/exec", {
+
+      fetch(WEB_APP_URL, {
         method: "POST",
         body: new URLSearchParams({ action: "subscribe", email: email })
       })
       .then(res => res.text())
-      .then(data => {
-        document.getElementById("message").textContent = "Please check your email to confirm your subscription.";
+      .then(text => {
+        if (text === "OK" || text.includes("Confirmation")) {
+          document.getElementById("message").innerText = "Please check your email to confirm your subscription.";
+        } else {
+          document.getElementById("message").innerText = "Error: " + text;
+        }
       })
-      .catch(err => {
-        document.getElementById("message").textContent = "Error. Please try again.";
+      .catch(() => {
+        document.getElementById("message").innerText = "Error. Please try again.";
       });
     });
   </script>
