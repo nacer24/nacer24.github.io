@@ -2,35 +2,34 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Confirming...</title>
+  <title>Confirm Subscription</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+  </style>
 </head>
 <body>
-  <p id="status">Confirming your subscription...</p>
+  <h1>Confirming your subscription...</h1>
+  <p>Please wait, you will be redirected to your eBook.</p>
 
   <script>
-    const WEB_APP_URL = "YOUR_GOOGLE_APP_SCRIPT_DEPLOYMENT_URL";
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get("email");
 
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-
-    if (token) {
-      fetch(WEB_APP_URL + "?action=confirm&token=" + encodeURIComponent(token), { method: "POST" })
-      .then(res => res.text())
-      .then(text => {
-        if (text === "Confirmed") {
-          document.getElementById("status").innerText = "Confirmed! Redirecting to download...";
-          setTimeout(() => {
-            window.location.href = "ebook.pdf"; // Your ebook file
-          }, 2000);
-        } else {
-          document.getElementById("status").innerText = "Invalid or expired link.";
-        }
+    if (email) {
+      fetch("https://script.google.com/macros/s/AKfycbwTHXiilYUMqlAfg6muy8xYSCJLwDYyYCjikGPdcfluNkrOy9plHQDe654Z5ZR_9_JE/exec", {
+        method: "POST",
+        body: new URLSearchParams({ action: "confirm", email: email })
       })
-      .catch(err => {
-        document.getElementById("status").innerText = "Error confirming subscription.";
+      .then(res => res.text())
+      .then(() => {
+        window.location.href = "ebook.pdf"; // your GitHub ebook file
+      })
+      .catch(() => {
+        document.body.innerHTML = "<h1>Error confirming subscription</h1>";
       });
     } else {
-      document.getElementById("status").innerText = "No token provided.";
+      document.body.innerHTML = "<h1>Invalid confirmation link</h1>";
     }
   </script>
 </body>
