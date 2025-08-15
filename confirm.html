@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Confirming...</title>
+</head>
+<body>
+  <p id="status">Confirming your subscription...</p>
+
+  <script>
+    const WEB_APP_URL = "YOUR_GOOGLE_APP_SCRIPT_DEPLOYMENT_URL";
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      fetch(WEB_APP_URL + "?action=confirm&token=" + encodeURIComponent(token), { method: "POST" })
+      .then(res => res.text())
+      .then(text => {
+        if (text === "Confirmed") {
+          document.getElementById("status").innerText = "Confirmed! Redirecting to download...";
+          setTimeout(() => {
+            window.location.href = "ebook.pdf"; // Your ebook file
+          }, 2000);
+        } else {
+          document.getElementById("status").innerText = "Invalid or expired link.";
+        }
+      })
+      .catch(err => {
+        document.getElementById("status").innerText = "Error confirming subscription.";
+      });
+    } else {
+      document.getElementById("status").innerText = "No token provided.";
+    }
+  </script>
+</body>
+</html>
