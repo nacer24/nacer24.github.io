@@ -1,37 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Confirm Subscription</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: Arial; text-align: center; padding: 40px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>body{font-family:Arial, sans-serif; text-align:center; padding:40px}</style>
 </head>
 <body>
-  <h2>Confirming your subscription...</h2>
-  <p>Please wait, you will be redirected to your eBook.</p>
+  <h2>Confirming your subscription…</h2>
+  <p id="msg">Please wait, grabbing your country and logging your confirmation.</p>
 
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWmqcNuJf22G4JrygLMsaU-MVCUeZQEG_gzcu7YZMdSvwyuHIXVapjShbZ0dPeNP4qUA/exec";
-    const EBOOK_URL = "https://nacer24.github.io/ebook.pdf";
+    const EBOOK_URL   = "https://nacer24.github.io/ebook.pdf";
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get("email");
+    const params = new URLSearchParams(location.search);
+    const email  = params.get("email");
 
-    if (email) {
-      fetch(WEB_APP_URL, {
-        method: "POST",
-        body: new URLSearchParams({ action: "confirm", email: email })
-      })
-      .then(() => {
-        window.location.href = EBOOK_URL;
-      })
-      .catch(() => {
-        document.body.innerHTML = "<h3>Error confirming subscription.</h3>";
-      });
+    if (!email) {
+      document.getElementById("msg").textContent = "Invalid confirmation link.";
     } else {
-      document.body.innerHTML = "<h3>Invalid confirmation link.</h3>";
+      getCountry().then(country => {
+        return fetch(WEB_APP_URL, {
+          method: "POST",
+          body: new URLSearchParams({ action: "confirm", email, country })
+        });
+      })
+      .then(() => { location.href = EBOOK_URL; })
+      .catch(() => { document.getElementById("msg").textContent = "Error confirming subscription."; });
+    }
+
+    // Try two geo services (HTTPS + CORS). Fallback to "Unknown".
+    async function getCountry() {
+      // 1) ipapi.co
+      try {
+        const r = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+        if (r.ok) {
+          const d = await r.json();
+          if (d && d.country_name) return d.country_name;
+        }
+      } catch (_) {}
+
+      // 2) ipwho.is
+      try {
+        const r2 = await fetch("https://ipwho.is/", { cache: "no-store" });
+        if (r2.ok) {
+          const d2 = await r2.json();
+          if (d2 && d2.success && d2.country) return d2.country;
+        }
+      } catch (_) {}
+
+      return "Unknown";
     }
   </script>
 </body>
