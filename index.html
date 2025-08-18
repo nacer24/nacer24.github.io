@@ -1,19 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Get Your Free eBook</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>body{font-family:Arial; text-align:center; padding:40px} input,button{padding:10px; margin:5px; font-size:16px}</style>
+  <style>
+    /* Reset + base */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #444;
+    }
+
+    p.subtitle {
+      font-size: 0.95em;
+      margin-bottom: 25px;
+      color: #666;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="email"]:focus {
+      border-color: #667eea;
+      outline: none;
+      box-shadow: 0 0 6px rgba(102,126,234,0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 0.95em;
+      color: #555;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <h1>Get Your Free eBook</h1>
-  <form id="subscribeForm">
-    <input type="email" id="email" placeholder="Enter your email" required>
-    <br>
-    <button type="submit">Subscribe</button>
-  </form>
-  <p id="message"></p>
+  <div class="container">
+    <h1>Get Your Free eBook</h1>
+    <p class="subtitle">Join our newsletter and receive your free copy instantly.</p>
+    <form id="subscribeForm">
+      <input type="email" id="email" placeholder="Enter your email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <p id="message"></p>
+  </div>
 
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxKJMkmq5vah0o1RjR1xkXZrHzGXBe770xV0UrwQzvOBpPrxjFFZl3h_FgePCiza6lr/exec";
@@ -30,14 +111,13 @@
       .then(text => {
         document.getElementById("message").innerText =
           (text === "OK" || text.includes("Confirmation"))
-            ? "Please check your email to confirm your subscription."
-            : "Error: " + text;
+            ? "✅ Please check your email to confirm your subscription."
+            : "❌ Error: " + text;
       })
       .catch(() => {
-        document.getElementById("message").innerText = "Error. Please try again.";
+        document.getElementById("message").innerText = "⚠️ Error. Please try again.";
       });
     });
   </script>
 </body>
 </html>
-
