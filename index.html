@@ -4,91 +4,47 @@
   <meta charset="UTF-8">
   <title>Get Your Free eBook</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    .box {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,.15);
-    }
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 15px 0;
-      font-size: 16px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    #message {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-  </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>📘 Get Your Free eBook</h2>
-  <p>Enter your email to receive the download link.</p>
+<h2>📘 Get Your Free eBook</h2>
 
-  <form id="subscribeForm">
-    <input type="email" id="email" placeholder="Enter your email" required>
-    <button type="submit">Subscribe</button>
-  </form>
+<form id="form">
+  <input type="email" id="email" placeholder="Enter your email" required>
+  <button type="submit">Subscribe</button>
+</form>
 
-  <p id="message"></p>
-</div>
+<p id="msg"></p>
 
 <script>
-  const WEB_APP_URL =
-    "https://script.google.com/macros/s/AKfycbxHeyAAmNQnivrYo2d38i0DUVJHnivayDTYiMWyPODsaPAflyXavxtoNuRWK-bUEAxq/exec";
+const WEB_APP_URL =
+  "https://script.google.com/macros/s/AKfycbxHeyAAmNQnivrYo2d38i0DUVJHnivayDTYiMWyPODsaPAflyXavxtoNuRWK-bUEAxq/exec";
 
-  document.getElementById("subscribeForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+document.getElementById("form").addEventListener("submit", e => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const msg = document.getElementById("msg");
 
-    const email = document.getElementById("email").value.trim();
-    const message = document.getElementById("message");
+  msg.textContent = "Submitting...";
 
-    message.textContent = "Submitting…";
-
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: new URLSearchParams({
-        action: "subscribe",
-        email: email
-      })
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "subscribe",
+      email: email
     })
-    .then(res => res.text())
-    .then(text => {
-      if (text.trim() === "OK") {
-        message.textContent =
-          "✅ Please check your email to confirm your subscription.";
-      } else {
-        message.textContent =
-          "❌ Error: " + text;
-      }
-    })
-    .catch(err => {
-      message.textContent =
-        "❌ Network error: " + err.message;
-    });
+  })
+  .then(r => r.text())
+  .then(t => {
+    msg.textContent =
+      t.trim() === "OK"
+        ? "✅ Please check your email to confirm your subscription."
+        : "❌ " + t;
+  })
+  .catch(() => {
+    msg.textContent = "❌ Network error.";
   });
+});
 </script>
 
 </body>
