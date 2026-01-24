@@ -1,72 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Confirm Subscription</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Confirming...</title>
 </head>
 <body>
 
-  <h2>Confirming your subscription…</h2>
-  <p id="msg">Please wait...</p>
+<h3>Confirming your subscription…</h3>
+<p id="msg">Please wait…</p>
 
-  <script>
-    const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbxHeyAAmNQnivrYo2d38i0DUVJHnivayDTYiMWyPODsaPAflyXavxtoNuRWK-bUEAxq/exec";
-    const EBOOK_URL =
-      "https://nacer24.github.io/ebook.pdf";
+<script>
+const WEB_APP_URL =
+  "https://script.google.com/macros/s/AKfycbxHeyAAmNQnivrYo2d38i0DUVJHnivayDTYiMWyPODsaPAflyXavxtoNuRWK-bUEAxq/exec";
+const EBOOK_URL =
+  "https://nacer24.github.io/ebook.pdf";
 
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get("email");
+const params = new URLSearchParams(location.search);
+const email = params.get("email");
+const token = params.get("token");
 
-    if (!email) {
-      document.getElementById("msg").textContent =
-        "Invalid confirmation link.";
-    } else {
-      getCountry()
-        .then(country => {
-          return fetch(WEB_APP_URL, {
-            method: "POST",
-            body: new URLSearchParams({
-              action: "confirm",
-              email: email,
-              country: country
-            })
-          });
-        })
-        .then(res => res.text())
-        .then(text => {
-          if (text.trim() === "OK") {
-            window.location.href = EBOOK_URL;
-          } else {
-            document.getElementById("msg").textContent =
-              "Confirmation failed: " + text;
-          }
-        })
-        .catch(err => {
-          document.getElementById("msg").textContent =
-            "Network error: " + err.message;
-        });
+if (!email || !token) {
+  document.getElementById("msg").textContent = "Invalid confirmation link.";
+} else {
+  getCountry().then(country => {
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: new URLSearchParams({
+        action: "confirm",
+        email: email,
+        token: token,
+        country: country
+      })
+    })
+    .then(r => r.text())
+    .then(t => {
+      if (t.trim() === "OK") {
+        location.href = EBOOK_URL;
+      } else {
+        document.getElementById("msg").textContent = t;
+      }
+    });
+  });
+}
+
+async function getCountry() {
+  try {
+    const r = await fetch("https://ipapi.co/json/");
+    if (r.ok) {
+      const d = await r.json();
+      return d.country_name || "Unknown";
     }
-
-    async function getCountry() {
-      try {
-        const r = await fetch("https://ipapi.co/json/");
-        if (r.ok) {
-          const d = await r.json();
-          if (d && d.country_name) return d.country_name;
-        }
-      } catch (_) {}
-      return "Unknown";
-    }
-  </script>
+  } catch {}
+  return "Unknown";
+}
+</script>
 
 </body>
 </html>
