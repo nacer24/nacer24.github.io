@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Get Your Free eBook</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free eBook</title>
 </head>
 <body>
 
-<h2>📘 Get Your Free eBook</h2>
+<h2>📘 Get the Free eBook</h2>
 
-<form id="form">
-  <input type="email" id="email" placeholder="Enter your email" required>
-  <button type="submit">Subscribe</button>
+<form id="f">
+  <input type="email" id="email" required placeholder="Your email">
+  <button>Subscribe</button>
 </form>
 
 <p id="msg"></p>
@@ -20,31 +19,26 @@
 const WEB_APP_URL =
   "https://script.google.com/macros/s/AKfycbxHeyAAmNQnivrYo2d38i0DUVJHnivayDTYiMWyPODsaPAflyXavxtoNuRWK-bUEAxq/exec";
 
-document.getElementById("form").addEventListener("submit", e => {
+f.onsubmit = e => {
   e.preventDefault();
-  const email = document.getElementById("email").value.trim();
-  const msg = document.getElementById("msg");
-
-  msg.textContent = "Submitting...";
+  msg.textContent = "Submitting…";
 
   fetch(WEB_APP_URL, {
     method: "POST",
     body: new URLSearchParams({
       action: "subscribe",
-      email: email
+      email: email.value.trim()
     })
   })
   .then(r => r.text())
   .then(t => {
     msg.textContent =
-      t.trim() === "OK"
-        ? "✅ Please check your email to confirm your subscription."
+      t === "OK"
+        ? "✅ Check your email to confirm."
         : "❌ " + t;
   })
-  .catch(() => {
-    msg.textContent = "❌ Network error.";
-  });
-});
+  .catch(() => msg.textContent = "❌ Network error");
+};
 </script>
 
 </body>
