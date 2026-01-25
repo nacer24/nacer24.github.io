@@ -13,22 +13,25 @@ const WEB_APP_URL =
 "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
 
 const EBOOK_URL = "https://nacer24.github.io/ebook.pdf";
-const email = new URLSearchParams(window.location.search).get("email");
+const email = new URLSearchParams(location.search).get("email");
 
 if (!email) {
   document.getElementById("msg").textContent = "Invalid confirmation link.";
 } else {
-  fetch(WEB_APP_URL, {
-    method: "POST",
-    body: new URLSearchParams({
-      email: email,
-      confirm: "1"
-    })
+  getCountry().then(country => {
+    return fetch(WEB_APP_URL, {
+      method: "POST",
+      body: new URLSearchParams({
+        email: email,
+        country: country,
+        confirm: "1"
+      })
+    });
   })
   .then(res => res.text())
   .then(text => {
     if (text.trim() === "OK") {
-      window.location.href = EBOOK_URL;
+      location.href = EBOOK_URL;
     } else {
       document.getElementById("msg").textContent = text;
     }
@@ -36,6 +39,16 @@ if (!email) {
   .catch(() => {
     document.getElementById("msg").textContent = "Confirmation failed.";
   });
+}
+
+async function getCountry() {
+  try {
+    const r = await fetch("https://ipwho.is/");
+    const d = await r.json();
+    return d && d.success && d.country ? d.country : "Unknown";
+  } catch {
+    return "Unknown";
+  }
 }
 </script>
 
