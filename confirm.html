@@ -2,48 +2,51 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Confirming…</title>
+  <title>Confirming Subscription</title>
 </head>
 <body>
-
-<p id="msg">Confirming your subscription…</p>
+  <p id="msg">Confirming your subscription…</p>
 
 <script>
 const WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbzdGSMXy0LdyQySXD-3B_j8zwepdX2pqTf3LqqzDy2aJX2ICRdmL9WPRwYpmv2w13o/exec";
-const EBOOK_URL =
-  "https://nacer24.github.io/ebook.pdf";
+"https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
 
-const p = new URLSearchParams(location.search);
-const email = p.get("email");
-const token = p.get("token");
+const EBOOK_URL = "https://nacer24.github.io/ebook.pdf";
+const email = new URLSearchParams(window.location.search).get("email");
 
-if (!email || !token) {
-  msg.textContent = "Invalid link.";
+if (!email) {
+  document.getElementById("msg").textContent = "Invalid confirmation link.";
 } else {
-  fetch("https://ipapi.co/json/")
-    .then(r => r.json())
-    .then(d => d.country_name || "Unknown")
-    .catch(() => "Unknown")
-    .then(country => {
+  getCountry()
+    .then(country =>
       fetch(WEB_APP_URL, {
         method: "POST",
-        body: new URLSearchParams({
-          action: "confirm",
-          email,
-          token,
-          country
-        })
+        body: new URLSearchParams({ email, country })
       })
-      .then(r => r.text())
-      .then(t => {
-        if (t === "OK") location.href = EBOOK_URL;
-        else msg.textContent = t;
-      });
+    )
+    .then(res => res.text())
+    .then(text => {
+      if (text.trim() === "OK") {
+        window.location.href = EBOOK_URL;
+      } else {
+        document.getElementById("msg").textContent = text;
+      }
+    })
+    .catch(() => {
+      document.getElementById("msg").textContent = "Confirmation failed.";
     });
 }
-</script>
 
+async function getCountry() {
+  try {
+    const r = await fetch("https://ipapi.co/json/");
+    if (r.ok) {
+      const d = await r.json();
+      return d.country_name || "Unknown";
+    }
+  } catch {}
+  return "Unknown";
+}
+</script>
 </body>
 </html>
-
