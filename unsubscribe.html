@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unsubscribe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Unsubscribing…</h2>
+    <p id="msg">Please wait.</p>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
+
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+
+    if (!token) {
+      document.getElementById("msg").textContent = "Invalid unsubscribe link.";
+    } else {
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "unsubscribe",
+          token: token
+        })
+      })
+      .then(r => r.text())
+      .then(() => {
+        document.getElementById("msg").textContent =
+          "✅ You have been successfully unsubscribed.";
+      })
+      .catch(() => {
+        document.getElementById("msg").textContent =
+          "❌ Error. Please try again later.";
+      });
+    }
+  </script>
+</body>
+</html>
