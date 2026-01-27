@@ -26,11 +26,14 @@ document.getElementById("subscribeForm").addEventListener("submit", e => {
 
   fetch(WEB_APP_URL, {
     method: "POST",
-    body: new URLSearchParams({ email })
+    body: new URLSearchParams({
+      action: "subscribe",
+      email: email
+    })
   })
   .then(res => res.text())
   .then(text => {
-    if (text.trim() === "OK") {
+    if (text.toLowerCase().includes("confirmation")) {
       document.getElementById("message").textContent =
         "✅ Please check your email to confirm your subscription.";
     } else {
