@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Get Your Free eBook</title>
+<title>Free eBook Download</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -15,77 +15,95 @@
   body {
     min-height: 100vh;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    background: radial-gradient(circle at top, #1a1a1a, #000);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #222;
+    color: #fff;
+  }
+
+  .container {
+    max-width: 900px;
+    width: 100%;
+    padding: 30px;
   }
 
   .card {
-    background: #fff;
-    width: 100%;
-    max-width: 420px;
-    padding: 36px 28px;
-    border-radius: 18px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    text-align: center;
-    animation: fadeUp 0.6s ease;
+    display: flex;
+    gap: 40px;
+    background: #0f0f0f;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(255,0,0,0.15);
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+  .left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .ebook {
-    width: 140px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    width: 260px;
+    max-width: 100%;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(255,0,0,0.35);
+  }
+
+  .right {
+    flex: 1;
   }
 
   h1 {
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-size: 32px;
+    margin-bottom: 12px;
+    color: #ff3b3b;
   }
 
   .subtitle {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 22px;
+    font-size: 15px;
+    color: #ccc;
+    margin-bottom: 28px;
+    line-height: 1.6;
   }
 
   input[type="email"] {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
     border-radius: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
+    background: #111;
+    color: #fff;
     font-size: 15px;
     margin-bottom: 14px;
   }
 
-  input[type="email"]:focus {
+  input::placeholder {
+    color: #777;
+  }
+
+  input:focus {
     outline: none;
-    border-color: #2575fc;
+    border-color: #ff3b3b;
   }
 
   button {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
     border-radius: 10px;
     border: none;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    background: linear-gradient(135deg, #ff3b3b, #c40000);
     color: #fff;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
 
   button:hover {
-    opacity: 0.95;
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,0,0,0.4);
   }
 
   #message {
@@ -96,37 +114,66 @@
   .trust {
     margin-top: 18px;
     font-size: 12px;
-    color: #777;
+    color: #888;
   }
 
   .trust a {
-    color: #2575fc;
+    color: #ff3b3b;
     text-decoration: none;
   }
 
+  /* ===== Mobile ===== */
+  @media (max-width: 768px) {
+    .card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .left {
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 26px;
+    }
+  }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <img class="ebook" src="https://via.placeholder.com/300x420.png?text=Free+eBook" alt="Free eBook">
+<div class="container">
+  <div class="card">
 
-  <h1>📘 Free eBook Download</h1>
-  <p class="subtitle">
-    Learn powerful strategies — delivered instantly.
-  </p>
+    <!-- LEFT: eBook image -->
+    <div class="left">
+      <img
+        class="ebook"
+        src="https://via.placeholder.com/300x420.png?text=Free+eBook"
+        alt="Free eBook">
+    </div>
 
-  <form id="subscribeForm">
-    <input type="email" id="email" placeholder="Enter your email address" required>
-    <button type="submit">Get Instant Access</button>
-  </form>
+    <!-- RIGHT: Content -->
+    <div class="right">
+      <h1>Free eBook</h1>
+      <p class="subtitle">
+        Discover practical strategies you can apply immediately.
+        No fluff. No spam. Just value.
+      </p>
 
-  <p id="message"></p>
+      <form id="subscribeForm">
+        <input type="email" id="email" placeholder="Enter your email address" required>
+        <button type="submit">Get Instant Access</button>
+      </form>
 
-  <div class="trust">
-    No spam. Unsubscribe anytime.<br>
-    <a href="/privacy.html" target="_blank">Privacy Policy</a>
+      <p id="message"></p>
+
+      <div class="trust">
+        100% free · Unsubscribe anytime<br>
+        <a href="/privacy.html" target="_blank">Privacy Policy</a>
+      </div>
+    </div>
+
   </div>
 </div>
 
