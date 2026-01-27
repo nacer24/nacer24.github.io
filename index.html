@@ -28,28 +28,27 @@ body {
   max-width: 980px;
   width: 100%;
   background: #000;
-  border-radius: 26px;
+  border-radius: 22px;
   overflow: hidden;
-  border: 1px solid #222;
-  box-shadow: 0 45px 120px rgba(255, 0, 0, 0.25);
+  border: 1px solid #1e1e1e;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.9);
 }
 
 /* ===== LEFT IMAGE ===== */
 .left {
   flex: 1;
-  background: #0b0b0b;
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 50px;
-  border-right: 1px solid #222;
+  border-right: 1px solid #1e1e1e;
 }
 
 .left img {
   max-width: 100%;
   height: auto;
-  border-radius: 14px;
-  box-shadow: 0 30px 80px rgba(255, 0, 0, 0.35);
+  border-radius: 12px;
 }
 
 /* ===== RIGHT CONTENT ===== */
@@ -60,31 +59,27 @@ body {
 }
 
 h1 {
-  font-size: 38px;
+  font-size: 36px;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 h1 span {
-  color: #ff0000;
+  color: #2f80ff; /* BLUE ACCENT */
 }
 
 .subtitle {
   font-size: 16px;
-  color: #ccc;
+  color: #cfcfcf;
   margin-bottom: 34px;
 }
 
 /* ===== FORM ===== */
-form {
-  width: 100%;
-}
-
 input[type="email"] {
   width: 100%;
   padding: 16px;
   font-size: 16px;
-  background: #0c0c0c;
+  background: #000;
   border: 1px solid #2a2a2a;
   border-radius: 10px;
   color: #fff;
@@ -92,7 +87,12 @@ input[type="email"] {
 }
 
 input::placeholder {
-  color: #777;
+  color: #888;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2f80ff;
 }
 
 button {
@@ -100,17 +100,17 @@ button {
   padding: 16px;
   font-size: 17px;
   font-weight: 600;
-  background: linear-gradient(135deg, #ff0000, #b30000);
+  background: #2f80ff;
   border: none;
   border-radius: 10px;
   color: #fff;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 button:hover {
+  opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 15px 35px rgba(255, 0, 0, 0.45);
 }
 
 #message {
@@ -118,7 +118,7 @@ button:hover {
   font-size: 14px;
 }
 
-/* ===== FOOTER LINKS ===== */
+/* ===== FOOTER ===== */
 .footer-links {
   margin-top: 28px;
   font-size: 12px;
@@ -126,7 +126,7 @@ button:hover {
 }
 
 .footer-links a {
-  color: #ff0000;
+  color: #2f80ff;
   text-decoration: none;
 }
 
@@ -142,7 +142,7 @@ button:hover {
 
   .left {
     border-right: none;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid #1e1e1e;
   }
 }
 </style>
@@ -152,17 +152,16 @@ button:hover {
 
 <div class="card">
 
-  <!-- LEFT: IMAGE -->
+  <!-- LEFT IMAGE -->
   <div class="left">
-    <!-- CHANGE IMAGE PATH IF NEEDED -->
-    <img src="ebook-cover.jpg" alt="Free eBook Cover">
+    <img src="ebook-cover.png" alt="Free eBook Cover">
   </div>
 
-  <!-- RIGHT: CONTENT -->
+  <!-- RIGHT CONTENT -->
   <div class="right">
     <h1>Get Your <span>Free eBook</span></h1>
     <p class="subtitle">
-      Enter your email below and receive instant access after confirmation.
+      Subscribe once and receive instant access after confirmation.
     </p>
 
     <form id="subscribeForm">
