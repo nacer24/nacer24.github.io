@@ -1,60 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Unsubscribe</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-    }
-    .box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 400px;
-      box-shadow: 0 6px 20px rgba(0,0,0,.1);
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Unsubscribe</title>
 </head>
 <body>
-  <div class="box">
-    <h2>Unsubscribing…</h2>
-    <p id="msg">Please wait.</p>
-  </div>
+<h2>Unsubscribe from Our Mailing List</h2>
 
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
+<form id="unsubscribeForm">
+  <input type="email" id="email" placeholder="Enter your email" required>
+  <input type="text" id="token" placeholder="Enter your token from email" required>
+  <button type="submit">Unsubscribe</button>
+</form>
 
-    const params = new URLSearchParams(location.search);
-    const token = params.get("token");
+<p id="message"></p>
 
-    if (!token) {
-      document.getElementById("msg").textContent = "Invalid unsubscribe link.";
-    } else {
-      fetch(WEB_APP_URL, {
-        method: "POST",
-        body: new URLSearchParams({
-          action: "unsubscribe",
-          token: token
-        })
-      })
-      .then(r => r.text())
-      .then(() => {
-        document.getElementById("msg").textContent =
-          "✅ You have been successfully unsubscribed.";
-      })
-      .catch(() => {
-        document.getElementById("msg").textContent =
-          "❌ Error. Please try again later.";
-      });
-    }
-  </script>
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
+
+document.getElementById("unsubscribeForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const token = decodeURIComponent(document.getElementById("token").value.trim());
+
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "unsubscribe",
+      email: email,
+      token: token
+    })
+  })
+  .then(res => res.text())
+  .then(text => {
+    document.getElementById("message").textContent =
+      text.trim() === "OK" ? "✅ You have been unsubscribed." : "❌ Error: " + text;
+  })
+  .catch(err => {
+    document.getElementById("message").textContent =
+      "❌ Network error: " + err.message;
+  });
+});
+</script>
 </body>
 </html>
