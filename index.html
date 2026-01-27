@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Free eBook Download</title>
+<title>Free eBook</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -15,68 +15,75 @@
   body {
     min-height: 100vh;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top, #1a1a1a, #000);
+    background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
   }
 
-  .container {
-    max-width: 900px;
+  .wrapper {
+    max-width: 960px;
     width: 100%;
-    padding: 30px;
+    padding: 24px;
   }
 
   .card {
     display: flex;
-    gap: 40px;
-    background: #0f0f0f;
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 20px 60px rgba(255,0,0,0.15);
+    gap: 48px;
+    background: #0b0b0b;
+    border-radius: 22px;
+    padding: 48px;
+    border: 1px solid #1a1a1a;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.02),
+      0 30px 80px rgba(255,0,0,0.15);
   }
 
+  /* LEFT */
   .left {
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
   }
 
   .ebook {
-    width: 260px;
+    width: 280px;
     max-width: 100%;
     border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(255,0,0,0.35);
+    box-shadow:
+      0 20px 50px rgba(255,0,0,0.45);
   }
 
+  /* RIGHT */
   .right {
     flex: 1;
   }
 
   h1 {
-    font-size: 32px;
-    margin-bottom: 12px;
-    color: #ff3b3b;
+    font-size: 34px;
+    margin-bottom: 14px;
+    color: #ff2d2d;
+    letter-spacing: -0.5px;
   }
 
   .subtitle {
     font-size: 15px;
-    color: #ccc;
-    margin-bottom: 28px;
-    line-height: 1.6;
+    color: #ddd;
+    margin-bottom: 32px;
+    line-height: 1.7;
   }
 
   input[type="email"] {
     width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #333;
-    background: #111;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #222;
+    background: #000;
     color: #fff;
     font-size: 15px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   input::placeholder {
@@ -85,56 +92,54 @@
 
   input:focus {
     outline: none;
-    border-color: #ff3b3b;
+    border-color: #ff2d2d;
   }
 
   button {
     width: 100%;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 16px;
+    border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, #ff3b3b, #c40000);
+    background: #ff2d2d;
     color: #fff;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
   button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255,0,0,0.4);
+    box-shadow: 0 12px 30px rgba(255,45,45,0.5);
   }
 
   #message {
-    margin-top: 14px;
+    margin-top: 16px;
     font-size: 14px;
   }
 
   .trust {
-    margin-top: 18px;
+    margin-top: 22px;
     font-size: 12px;
-    color: #888;
+    color: #aaa;
   }
 
   .trust a {
-    color: #ff3b3b;
+    color: #ff2d2d;
     text-decoration: none;
   }
 
-  /* ===== Mobile ===== */
-  @media (max-width: 768px) {
+  /* MOBILE */
+  @media (max-width: 820px) {
     .card {
       flex-direction: column;
+      padding: 32px;
+      gap: 28px;
       text-align: center;
     }
 
-    .left {
-      margin-bottom: 20px;
-    }
-
     h1 {
-      font-size: 26px;
+      font-size: 28px;
     }
   }
 </style>
@@ -142,23 +147,23 @@
 
 <body>
 
-<div class="container">
+<div class="wrapper">
   <div class="card">
 
-    <!-- LEFT: eBook image -->
+    <!-- LEFT: IMAGE -->
     <div class="left">
       <img
-        class="ebook"
         src="https://via.placeholder.com/300x420.png?text=Free+eBook"
+        class="ebook"
         alt="Free eBook">
     </div>
 
-    <!-- RIGHT: Content -->
+    <!-- RIGHT: CONTENT -->
     <div class="right">
       <h1>Free eBook</h1>
       <p class="subtitle">
-        Discover practical strategies you can apply immediately.
-        No fluff. No spam. Just value.
+        Practical strategies. Zero fluff.<br>
+        Delivered instantly after confirmation.
       </p>
 
       <form id="subscribeForm">
@@ -169,7 +174,7 @@
       <p id="message"></p>
 
       <div class="trust">
-        100% free · Unsubscribe anytime<br>
+        No spam · Unsubscribe anytime<br>
         <a href="/privacy.html" target="_blank">Privacy Policy</a>
       </div>
     </div>
@@ -198,11 +203,9 @@ document.getElementById("subscribeForm").addEventListener("submit", e => {
   })
   .then(res => res.text())
   .then(text => {
-    if (text.toLowerCase().includes("confirmation")) {
-      msg.textContent = "✅ Check your inbox to confirm your subscription.";
-    } else {
-      msg.textContent = "❌ " + text;
-    }
+    msg.textContent = text.toLowerCase().includes("confirmation")
+      ? "✅ Check your inbox to confirm your subscription."
+      : "❌ " + text;
   })
   .catch(() => {
     msg.textContent = "❌ Network error. Please try again.";
