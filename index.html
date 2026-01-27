@@ -20,16 +20,18 @@
 <p id="message"></p>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
+const WEB_APP_URL =
+"https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
 
 document.getElementById("subscribeForm").addEventListener("submit", e => {
   e.preventDefault();
+
   const email = document.getElementById("email").value.trim();
 
   fetch(WEB_APP_URL, {
     method: "POST",
     body: new URLSearchParams({
-      action: "subscribe",
+      action: "subscribe",  // ✅ MUST include this
       email: email
     })
   })
