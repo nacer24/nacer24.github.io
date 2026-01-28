@@ -13,41 +13,17 @@
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      color: #f44336;
-      text-align: center;
-    }
-    .chart-container {
-      width: 90%;
-      max-width: 900px;
-      margin: 40px auto;
-      background: #222;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-    canvas {
-      background: #111;
-    }
-    input[type="password"] {
-      padding: 8px;
-      margin: 10px 0;
-      width: 200px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      padding: 8px 15px;
-      border-radius: 5px;
-      border: none;
-      background-color: #f44336;
-      color: #fff;
-      cursor: pointer;
-    }
-    #loginSection {
-      text-align: center;
-      margin-top: 50px;
-    }
+    h1 { text-align:center; color:#f44336; }
+    #loginSection { text-align:center; margin-top:50px; }
+    input, button { padding: 8px; margin:5px; border-radius:5px; border:none; }
+    input { width:200px; }
+    button { background:#f44336; color:#fff; cursor:pointer; }
+    #dashboard { display:none; }
+    .summary { display:flex; flex-wrap:wrap; justify-content:center; margin:20px 0; }
+    .card { background:#222; padding:15px 20px; margin:10px; border-radius:10px; text-align:center; width:150px; box-shadow:0 0 15px rgba(0,0,0,0.5); }
+    .card h2 { color:#f44336; margin:0; }
+    .filters { text-align:center; margin:20px 0; }
+    .chart-container { width:90%; max-width:900px; margin:40px auto; background:#222; padding:20px; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.5); }
   </style>
 </head>
 <body>
@@ -60,26 +36,36 @@
   <p id="loginMsg"></p>
 </div>
 
-<div id="dashboard" style="display:none;">
-  <div class="chart-container">
-    <canvas id="subscribersChart"></canvas>
+<div id="dashboard">
+  <div class="summary">
+    <div class="card">Total Subscribers<br><h2 id="totalSubs">0</h2></div>
+    <div class="card">Confirmed<br><h2 id="confirmedSubs">0</h2></div>
+    <div class="card">Opens<br><h2 id="totalOpens">0</h2></div>
+    <div class="card">Clicks<br><h2 id="totalClicks">0</h2></div>
+    <div class="card">Conversion %<br><h2 id="totalConversion">0</h2></div>
   </div>
-  <div class="chart-container">
-    <canvas id="opensChart"></canvas>
+
+  <div class="filters">
+    <label>From: <input type="date" id="fromDate"></label>
+    <label>To: <input type="date" id="toDate"></label>
+    <button id="applyFilter">Apply Filter</button>
+    <button id="exportCSV">Export CSV</button>
   </div>
-  <div class="chart-container">
-    <canvas id="clicksChart"></canvas>
-  </div>
-  <div class="chart-container">
-    <canvas id="conversionChart"></canvas>
-  </div>
+
+  <div class="chart-container"><canvas id="subscribersChart"></canvas></div>
+  <div class="chart-container"><canvas id="opensChart"></canvas></div>
+  <div class="chart-container"><canvas id="clicksChart"></canvas></div>
+  <div class="chart-container"><canvas id="conversionChart"></canvas></div>
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec"; // Replace with your deployed Apps Script URL
+const WEB_APP_URL = "https://script.google.com/macros/library/d/17QaMyXvfsbQCWRV7kRr9kOPAfIipfLUyGvQyUYT52ZE8zopne3p1fN_Q/31"; // Replace with your Apps Script URL
 
-const loginBtn = document.getElementById("loginBtn");
-loginBtn.addEventListener("click", () => {
+let allData = []; // Store raw data for filters
+let charts = {};
+
+/************ LOGIN ************/
+document.getElementById("loginBtn").addEventListener("click", () => {
   const key = document.getElementById("adminKey").value.trim();
   fetch(`${WEB_APP_URL}?admin=1&key=${key}`)
     .then(res => res.json())
@@ -90,7 +76,8 @@ loginBtn.addEventListener("click", () => {
       }
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
-      buildCharts(data);
+      allData = data.slice(1); // remove header row
+      renderDashboard(allData);
     })
     .catch(err => {
       document.getElementById("loginMsg").textContent = "❌ Error fetching data";
@@ -98,48 +85,72 @@ loginBtn.addEventListener("click", () => {
     });
 });
 
-function buildCharts(rows) {
-  // Extract data skipping header row
-  rows = rows.slice(1);
+/************ FILTER AND CSV ************/
+document.getElementById("applyFilter").addEventListener("click", () => {
+  const from = new Date(document.getElementById("fromDate").value);
+  const to = new Date(document.getElementById("toDate").value);
+  const filtered = allData.filter(r => {
+    const date = new Date(r[0]);
+    return (!from || date >= from) && (!to || date <= to);
+  });
+  renderDashboard(filtered);
+});
 
-  const labels = rows.map(r => r[1]); // emails
-  const opens  = rows.map(r => r[4] || 0);
-  const clicks = rows.map(r => r[5] || 0);
-  const conversions = rows.map(r => r[6] || 0);
+document.getElementById("exportCSV").addEventListener("click", () => {
+  let csv = "Timestamp,Email,Country,Status,Opens,Clicks,Conversion\n";
+  allData.forEach(r => {
+    csv += r.map(v => `"${v}"`).join(",") + "\n";
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'subscribers.csv';
+  a.click();
+});
 
-  // Subscribers per email
-  new Chart(document.getElementById("subscribersChart"), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Subscribers Status (Confirmed=1, Unsubscribed=0)',
-        data: rows.map(r => r[3] === "confirmed" ? 1 : 0),
-        backgroundColor: '#f44336'
-      }]
-    },
-    options: { responsive:true, plugins:{legend:{display:false}} }
+/************ RENDER DASHBOARD ************/
+function renderDashboard(data) {
+  // Summary
+  let totalSubs = data.length;
+  let confirmed = data.filter(r => r[3]==="confirmed").length;
+  let totalOpens = data.reduce((sum,r)=>sum+(r[4]||0),0);
+  let totalClicks = data.reduce((sum,r)=>sum+(r[5]||0),0);
+  let totalConversion = totalOpens ? Math.round((totalClicks/totalOpens)*100) : 0;
+
+  document.getElementById("totalSubs").textContent = totalSubs;
+  document.getElementById("confirmedSubs").textContent = confirmed;
+  document.getElementById("totalOpens").textContent = totalOpens;
+  document.getElementById("totalClicks").textContent = totalClicks;
+  document.getElementById("totalConversion").textContent = totalConversion;
+
+  const labels = data.map(r=>r[1]);
+  const opens = data.map(r=>r[4]||0);
+  const clicks = data.map(r=>r[5]||0);
+  const conversions = data.map(r=>r[6]||0);
+  const confirmedStatus = data.map(r=>r[3]==="confirmed"?1:0);
+
+  // Destroy old charts
+  for(let key in charts) { if(charts[key]) charts[key].destroy(); }
+
+  charts.subscribersChart = new Chart(document.getElementById("subscribersChart"),{
+    type:'bar', data:{labels, datasets:[{label:'Confirmed Subscribers', data:confirmedStatus, backgroundColor:'#f44336'}]},
+    options:{responsive:true, plugins:{legend:{display:false}}}
   });
 
-  // Opens chart
-  new Chart(document.getElementById("opensChart"), {
-    type: 'bar',
-    data: { labels, datasets:[{ label: 'Opens', data: opens, backgroundColor: '#2196f3' }] },
-    options: { responsive:true }
+  charts.opensChart = new Chart(document.getElementById("opensChart"),{
+    type:'bar', data:{labels, datasets:[{label:'Opens', data:opens, backgroundColor:'#2196f3'}]},
+    options:{responsive:true}
   });
 
-  // Clicks chart
-  new Chart(document.getElementById("clicksChart"), {
-    type: 'bar',
-    data: { labels, datasets:[{ label: 'Clicks', data: clicks, backgroundColor: '#ff9800' }] },
-    options: { responsive:true }
+  charts.clicksChart = new Chart(document.getElementById("clicksChart"),{
+    type:'bar', data:{labels, datasets:[{label:'Clicks', data:clicks, backgroundColor:'#ff9800'}]},
+    options:{responsive:true}
   });
 
-  // Conversion chart
-  new Chart(document.getElementById("conversionChart"), {
-    type: 'bar',
-    data: { labels, datasets:[{ label: 'Conversion %', data: conversions, backgroundColor: '#4caf50' }] },
-    options: { responsive:true }
+  charts.conversionChart = new Chart(document.getElementById("conversionChart"),{
+    type:'bar', data:{labels, datasets:[{label:'Conversion %', data:conversions, backgroundColor:'#4caf50'}]},
+    options:{responsive:true}
   });
 }
 </script>
