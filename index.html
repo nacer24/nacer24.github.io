@@ -6,62 +6,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: Arial, sans-serif;
   background: #000;
   color: #fff;
+  font-family: Arial, sans-serif;
 }
 
-/* === PAGE WRAPPER === */
-.page {
-  max-width: 1000px;
-  margin: auto;
-  padding: 30px 20px 40px;
-}
-
-/* === HERO === */
-.hero {
+/* === CENTER WRAPPER === */
+.wrapper {
+  min-height: 100vh;
   display: flex;
-  gap: 30px;
-  align-items: flex-start; /* 🔴 important */
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-/* === TEXT SIDE === */
-.hero-text {
-  flex: 1;
-  min-width: 280px;
+/* === BOX === */
+.box {
+  width: 100%;
+  max-width: 420px;
+  background: #000;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
 }
 
-.hero-text h1 {
-  font-size: 32px;
+/* === TEXT === */
+h1 {
+  font-size: 28px;
   margin-bottom: 10px;
 }
 
-.hero-text h1 span {
-  color: #00bfff; /* blue text only */
+h1 span {
+  color: #00bfff;
 }
 
-.hero-text p {
-  font-size: 16px;
+p {
   color: #ccc;
+  font-size: 15px;
   margin-bottom: 20px;
 }
 
 /* === FORM === */
-form {
-  margin-top: 10px;
-}
-
 input[type="email"] {
   width: 100%;
   padding: 14px;
   font-size: 16px;
   border: none;
   border-radius: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 button {
@@ -80,31 +80,15 @@ button:hover {
 }
 
 #message {
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 14px;
 }
 
-/* === IMAGE SIDE === */
-.hero-image {
-  flex: 1;
-  min-width: 260px;
-  text-align: center;
-}
-
-.hero-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
 /* === MOBILE FIX === */
-@media (max-width: 600px) {
-  .hero {
-    flex-direction: column;
-  }
-
-  .hero-text h1 {
-    font-size: 26px;
+@media (max-height: 600px) {
+  .wrapper {
+    align-items: flex-start;
+    padding-top: 40px;
   }
 }
 </style>
@@ -112,27 +96,17 @@ button:hover {
 
 <body>
 
-<div class="page">
-  <div class="hero">
+<div class="wrapper">
+  <div class="box">
+    <h1>Get Your <span>Free eBook</span></h1>
+    <p>Enter your email below and get instant access.</p>
 
-    <!-- LEFT -->
-    <div class="hero-text">
-      <h1>Get Your <span>Free eBook</span></h1>
-      <p>Enter your email and get instant access to this exclusive resource.</p>
+    <form id="subscribeForm">
+      <input type="email" id="email" placeholder="Enter your email" required>
+      <button type="submit">Get Instant Access</button>
+    </form>
 
-      <form id="subscribeForm">
-        <input type="email" id="email" placeholder="Enter your email" required>
-        <button type="submit">Get Instant Access</button>
-      </form>
-
-      <div id="message"></div>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="hero-image">
-      <img src="ebook-cover.jpg" alt="Free eBook">
-    </div>
-
+    <div id="message"></div>
   </div>
 </div>
 
