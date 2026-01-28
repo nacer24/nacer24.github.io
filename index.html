@@ -1,143 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Get Your Free eBook</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Get Your Free eBook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
-}
+    body {
+      height: 100vh;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-/* === CENTER WRAPPER === */
-.wrapper {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+    .box {
+      width: 100%;
+      max-width: 360px;
+      padding: 30px;
+      text-align: center;
+      background: #111;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.15);
+    }
 
-/* === BOX === */
-.box {
-  width: 100%;
-  max-width: 420px;
-  background: #000;
-  border: 1px solid #222;
-  border-radius: 10px;
-  padding: 30px;
-  text-align: center;
-}
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
 
-/* === TEXT === */
-h1 {
-  font-size: 28px;
-  margin-bottom: 10px;
-}
+    .sub {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
 
-h1 span {
-  color: #00bfff;
-}
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
 
-p {
-  color: #ccc;
-  font-size: 15px;
-  margin-bottom: 20px;
-}
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #e10600;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-/* === FORM === */
-input[type="email"] {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  margin-bottom: 12px;
-}
+    button:hover {
+      background: #ff1a1a;
+    }
 
-button {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  background: #e10600;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
+    .hint {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #aaa;
+    }
 
-button:hover {
-  opacity: 0.9;
-}
+    #message {
+      margin-top: 12px;
+      font-size: 14px;
+    }
 
-#message {
-  margin-top: 12px;
-  font-size: 14px;
-}
+    footer {
+      margin-top: 15px;
+      font-size: 11px;
+      color: #666;
+    }
 
-/* === MOBILE FIX === */
-@media (max-height: 600px) {
-  .wrapper {
-    align-items: flex-start;
-    padding-top: 40px;
-  }
-}
-</style>
+    footer a {
+      color: #666;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="wrapper">
   <div class="box">
-    <h1>Get Your <span>Free eBook</span></h1>
-    <p>Enter your email below and get instant access.</p>
+    <h1>📘 Free eBook</h1>
+    <p class="sub">Enter your email to get instant access.</p>
 
     <form id="subscribeForm">
-      <input type="email" id="email" placeholder="Enter your email" required>
-      <button type="submit">Get Instant Access</button>
+      <input type="email" id="email" placeholder="Your email address" required>
+      <button type="submit">Get Free Access</button>
     </form>
 
+    <p class="hint">
+      📩 After subscribing, please check your email and confirm your subscription.
+    </p>
+
     <div id="message"></div>
+
+    <footer>
+      <a href="privacy.html" target="_blank">Privacy Policy</a>
+    </footer>
   </div>
-</div>
 
-<script>
-const WEB_APP_URL =
-"https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
+  <script>
+    const WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec";
 
-document.getElementById("subscribeForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const email = document.getElementById("email").value.trim();
+    const form = document.getElementById("subscribeForm");
+    const msg  = document.getElementById("message");
 
-  fetch(WEB_APP_URL, {
-    method: "POST",
-    body: new URLSearchParams({
-      action: "subscribe",
-      email: email
-    })
-  })
-  .then(r => r.text())
-  .then(t => {
-    document.getElementById("message").textContent =
-      t.includes("sent")
-      ? "✅ Check your email to confirm."
-      : "❌ " + t;
-  })
-  .catch(() => {
-    document.getElementById("message").textContent =
-      "❌ Network error.";
-  });
-});
-</script>
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      msg.textContent = "⏳ Sending confirmation email…";
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "subscribe",
+          email: email
+        })
+      })
+      .then(res => res.text())
+      .then(text => {
+        if (text.toLowerCase().includes("confirmation")) {
+          msg.textContent = "✅ Success! Please check your email to confirm.";
+          form.reset();
+        } else {
+          msg.textContent = "❌ " + text;
+        }
+      })
+      .catch(() => {
+        msg.textContent = "❌ Network error. Please try again.";
+      });
+    });
+  </script>
 
 </body>
 </html>
