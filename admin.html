@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #f44336;
+      text-align: center;
+    }
+    .chart-container {
+      width: 90%;
+      max-width: 900px;
+      margin: 40px auto;
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    canvas {
+      background: #111;
+    }
+    input[type="password"] {
+      padding: 8px;
+      margin: 10px 0;
+      width: 200px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 8px 15px;
+      border-radius: 5px;
+      border: none;
+      background-color: #f44336;
+      color: #fff;
+      cursor: pointer;
+    }
+    #loginSection {
+      text-align: center;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<div id="loginSection">
+  <input type="password" id="adminKey" placeholder="Enter Admin Key">
+  <button id="loginBtn">Login</button>
+  <p id="loginMsg"></p>
+</div>
+
+<div id="dashboard" style="display:none;">
+  <div class="chart-container">
+    <canvas id="subscribersChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="opensChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="clicksChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="conversionChart"></canvas>
+  </div>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzp1GxfDYwmHdbWjHRtKdiU_BpWUPJ7U_0TLZd3jma_5xwiM4K835nzyL8gTnv2_57i/exec"; // Replace with your deployed Apps Script URL
+
+const loginBtn = document.getElementById("loginBtn");
+loginBtn.addEventListener("click", () => {
+  const key = document.getElementById("adminKey").value.trim();
+  fetch(`${WEB_APP_URL}?admin=1&key=${key}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        document.getElementById("loginMsg").textContent = "❌ Invalid key or no data";
+        return;
+      }
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      buildCharts(data);
+    })
+    .catch(err => {
+      document.getElementById("loginMsg").textContent = "❌ Error fetching data";
+      console.error(err);
+    });
+});
+
+function buildCharts(rows) {
+  // Extract data skipping header row
+  rows = rows.slice(1);
+
+  const labels = rows.map(r => r[1]); // emails
+  const opens  = rows.map(r => r[4] || 0);
+  const clicks = rows.map(r => r[5] || 0);
+  const conversions = rows.map(r => r[6] || 0);
+
+  // Subscribers per email
+  new Chart(document.getElementById("subscribersChart"), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Subscribers Status (Confirmed=1, Unsubscribed=0)',
+        data: rows.map(r => r[3] === "confirmed" ? 1 : 0),
+        backgroundColor: '#f44336'
+      }]
+    },
+    options: { responsive:true, plugins:{legend:{display:false}} }
+  });
+
+  // Opens chart
+  new Chart(document.getElementById("opensChart"), {
+    type: 'bar',
+    data: { labels, datasets:[{ label: 'Opens', data: opens, backgroundColor: '#2196f3' }] },
+    options: { responsive:true }
+  });
+
+  // Clicks chart
+  new Chart(document.getElementById("clicksChart"), {
+    type: 'bar',
+    data: { labels, datasets:[{ label: 'Clicks', data: clicks, backgroundColor: '#ff9800' }] },
+    options: { responsive:true }
+  });
+
+  // Conversion chart
+  new Chart(document.getElementById("conversionChart"), {
+    type: 'bar',
+    data: { labels, datasets:[{ label: 'Conversion %', data: conversions, backgroundColor: '#4caf50' }] },
+    options: { responsive:true }
+  });
+}
+</script>
+
+</body>
+</html>
